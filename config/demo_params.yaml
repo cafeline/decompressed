@@ -1,0 +1,53 @@
+# Decompressed Demo Configuration
+
+# Pointcloud Compressor Node Parameters
+pointcloud_compressor_node:
+  ros__parameters:
+    # Input/Output settings
+    # input_pcd_file: "/home/ryo/tsudanuma/maps/tsudanuma-challenge-all.ply"
+    # voxel_size: 3.0
+    # min_points_threshold: 100
+
+    input_file: "/home/ryo/image_compressor_ws/src/tmp/bunny/data/bun000.ply"
+    voxel_size: 0.01
+    min_points_threshold: 1
+
+    # input_pcd_file: "/home/ryo/tukuba/tsukuba_all_241006_add-imu-conf.pcd"
+    # voxel_size: 0.5
+    # min_points_threshold: 1
+
+    # Compression Settings
+    use_voxel_filter: true
+    publish_once: true  # Publish only once for demo
+    publish_patterns: true
+    publish_occupied_voxel_markers: true
+    publish_pattern_dictionary: true
+    enable_visualization: true
+
+    # ROS Settings
+    use_sim_time: false
+
+# Decompressed Viewer Node Parameters
+decompressed_viewer_node:
+  ros__parameters:
+    # Topic Configuration
+    pattern_dictionary_topic: "pattern_dictionary"
+    pattern_markers_topic: "pattern_markers"
+
+    # Visualization Settings
+    frame_id: "map"
+    show_pattern_visualization: true
+
+    # ROS Settings
+    use_sim_time: false
+
+# Check Markers Node Parameters
+marker_checker_node:
+  ros__parameters:
+    # Topics to compare
+    marker_array_topic1: "/occupied_voxel_markers"
+    marker_array_topic2: "/pattern_markers"
+
+    # Comparison tolerances
+    position_tolerance: 1.0e-6
+    scale_tolerance: 1.0e-6
