@@ -1,6 +1,7 @@
 #include "decompressed/decompressed_viewer_node.hpp"
 #include <rclcpp/qos.hpp>
 #include <map>
+#include <algorithm>
 
 namespace decompressed {
 
@@ -166,7 +167,7 @@ bool DecompressedViewerNode::hasSpatialInfo(
     return (msg->blocks_x > 0 &&
             msg->blocks_y > 0 &&
             msg->blocks_z > 0 &&
-            !msg->block_indices.empty());
+            !msg->block_indices_data.empty());
 }
 
 visualization_msgs::msg::MarkerArray DecompressedViewerNode::createSpatialMarkers(
@@ -181,9 +182,29 @@ visualization_msgs::msg::MarkerArray DecompressedViewerNode::createSpatialMarker
         msg->voxel_grid_origin.z
     );
     
+    // Extract block indices from the message based on index_bit_size
+    std::vector<uint16_t> block_indices;
+    if (msg->index_bit_size == 8) {
+        // 8-bit encoding: each byte is one index
+        block_indices.reserve(msg->block_indices_data.size());
+        for (uint8_t byte : msg->block_indices_data) {
+            block_indices.push_back(static_cast<uint16_t>(byte));
+        }
+    } else if (msg->index_bit_size == 16) {
+        // 16-bit encoding: two bytes form one index (little-endian)
+        size_t num_indices = msg->block_indices_data.size() / 2;
+        block_indices.reserve(num_indices);
+        
+        for (size_t i = 0; i < msg->block_indices_data.size(); i += 2) {
+            uint16_t idx = static_cast<uint16_t>(msg->block_indices_data[i]) |
+                          (static_cast<uint16_t>(msg->block_indices_data[i + 1]) << 8);
+            block_indices.push_back(idx);
+        }
+    }
+    
     return pattern_visualizer_->createSpatialPatternMarkers(
         patterns,
-        msg->block_indices,
+        block_indices,
         blocks_dims,
         voxel_size,
         msg->block_size,

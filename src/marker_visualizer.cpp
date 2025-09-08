@@ -9,7 +9,7 @@ MarkerVisualizer::MarkerVisualizer(const std::string& frame_id)
 
 visualization_msgs::msg::MarkerArray MarkerVisualizer::createSpatialPatternMarkers(
     const std::vector<Block>& patterns,
-    const std::vector<uint8_t>& block_indices,
+    const std::vector<uint16_t>& block_indices,
     const std::tuple<uint32_t, uint32_t, uint32_t>& blocks_dims,
     double voxel_size,
     uint32_t block_size,
@@ -38,7 +38,7 @@ visualization_msgs::msg::MarkerArray MarkerVisualizer::createSpatialPatternMarke
         block_indices.size(), patterns.size());
     
     for (size_t block_idx = 0; block_idx < block_indices.size(); ++block_idx) {
-        uint8_t pattern_idx = block_indices[block_idx];
+        uint16_t pattern_idx = block_indices[block_idx];
         
         if (pattern_idx >= patterns.size()) {
             skipped_blocks++;

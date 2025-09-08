@@ -46,7 +46,7 @@ public:
      */
     visualization_msgs::msg::MarkerArray createSpatialPatternMarkers(
         const std::vector<Block>& patterns,
-        const std::vector<uint8_t>& block_indices,
+        const std::vector<uint16_t>& block_indices,
         const std::tuple<uint32_t, uint32_t, uint32_t>& blocks_dims,
         double voxel_size,
         uint32_t block_size,

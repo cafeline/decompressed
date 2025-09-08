@@ -4,13 +4,13 @@
 pointcloud_compressor_node:
   ros__parameters:
     # Input/Output settings
-    # input_pcd_file: "/home/ryo/tsudanuma/maps/tsudanuma-challenge-all.ply"
-    # voxel_size: 3.0
-    # min_points_threshold: 100
+    input_pcd_file: "/home/ryo/tsudanuma/maps/tsudanuma-challenge-all.ply"
+    voxel_size: 1.0
+    min_points_threshold: 50
 
-    input_file: "/home/ryo/image_compressor_ws/src/tmp/bunny/data/bun000.ply"
-    voxel_size: 0.01
-    min_points_threshold: 1
+    # input_file: "/home/ryo/image_compressor_ws/src/tmp/bunny/data/bun000.ply"
+    # voxel_size: 0.01
+    # min_points_threshold: 1
 
     # input_pcd_file: "/home/ryo/tukuba/tsukuba_all_241006_add-imu-conf.pcd"
     # voxel_size: 0.5

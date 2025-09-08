@@ -160,6 +160,22 @@ if(BUILD_TESTING)
     visualization_msgs
     pointcloud_compressor
   )
+  
+  # Test for large pattern indices (16-bit support)
+  ament_add_gtest(test_large_pattern_indices
+    test/test_large_pattern_indices.cpp
+  )
+  target_link_libraries(test_large_pattern_indices
+    marker_visualizer
+    pattern_dictionary_decompressor
+  )
+  ament_target_dependencies(test_large_pattern_indices
+    rclcpp
+    std_msgs
+    geometry_msgs
+    visualization_msgs
+    pointcloud_compressor
+  )
 endif()
 
 ament_package()
