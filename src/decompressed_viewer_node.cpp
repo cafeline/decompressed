@@ -143,16 +143,22 @@ std::vector<Block3D<8>> DecompressedViewerNode::getPatterns(
     size_t pattern_hash = calculatePatternHash(msg->dictionary_data);
     
     if (cached_pattern_hash_ == pattern_hash && !cached_patterns_.empty()) {
-        RCLCPP_DEBUG(this->get_logger(), "Using cached patterns");
+        RCLCPP_DEBUG(this->get_logger(), "Using cached patterns (hash: %zu)", pattern_hash);
         return cached_patterns_;
     }
     
     // Decompress patterns
+    auto decompress_start = std::chrono::high_resolution_clock::now();
     auto patterns = pattern_decompressor_->decompress(
         msg->dictionary_data,
         msg->num_patterns,
         msg->block_size
     );
+    auto decompress_end = std::chrono::high_resolution_clock::now();
+    auto decompress_time = std::chrono::duration_cast<std::chrono::microseconds>(decompress_end - decompress_start).count() / 1000.0;
+    
+    RCLCPP_DEBUG(this->get_logger(), "[Decompressed] Decompress %u patterns: %.2f ms", 
+                 msg->num_patterns, decompress_time);
     
     // Update cache
     cached_patterns_ = patterns;

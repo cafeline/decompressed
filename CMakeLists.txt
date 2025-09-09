@@ -176,6 +176,43 @@ if(BUILD_TESTING)
     visualization_msgs
     pointcloud_compressor
   )
+  
+  # Test for CUBE_LIST marker
+  ament_add_gtest(test_cube_list_marker
+    test/test_cube_list_marker.cpp
+  )
+  ament_target_dependencies(test_cube_list_marker
+    rclcpp
+    visualization_msgs
+    geometry_msgs
+    std_msgs
+  )
+  
+  # Benchmark for CUBE_LIST performance
+  add_executable(benchmark_cube_list
+    test/benchmark_cube_list.cpp
+  )
+  ament_target_dependencies(benchmark_cube_list
+    visualization_msgs
+    geometry_msgs
+    std_msgs
+  )
+  
+  # Test for spatial CUBE_LIST markers
+  ament_add_gtest(test_spatial_cube_list
+    test/test_spatial_cube_list.cpp
+  )
+  target_link_libraries(test_spatial_cube_list
+    marker_visualizer
+    pattern_dictionary_decompressor
+  )
+  ament_target_dependencies(test_spatial_cube_list
+    rclcpp
+    std_msgs
+    geometry_msgs
+    visualization_msgs
+    pointcloud_compressor
+  )
 endif()
 
 ament_package()

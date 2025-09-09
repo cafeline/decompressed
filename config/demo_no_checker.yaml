@@ -1,26 +1,18 @@
-# Decompressed Demo Configuration
+# Decompressed Demo Configuration - Without check_markers
 
 # Launch Configuration
 launch_config:
   ros__parameters:
-    enable_check_markers: false  # Enable/disable check_markers node
-    enable_rviz: true          # Enable/disable RViz
+    enable_check_markers: false  # Disable check_markers node
+    enable_rviz: true            # Keep RViz enabled
 
 # Pointcloud Compressor Node Parameters
 pointcloud_compressor_node:
   ros__parameters:
     # Input/Output settings
     input_pcd_file: "/home/ryo/tsudanuma/maps/tsudanuma-challenge-all.ply"
-    voxel_size: 0.5
-    min_points_threshold: 5
-
-    # input_file: "/home/ryo/image_compressor_ws/src/tmp/bunny/data/bun000.ply"
-    # voxel_size: 0.01
-    # min_points_threshold: 1
-
-    # input_pcd_file: "/home/ryo/tukuba/tsukuba_all_241006_add-imu-conf.pcd"
-    # voxel_size: 0.5
-    # min_points_threshold: 1
+    voxel_size: 1.0
+    min_points_threshold: 50
 
     # Compression Settings
     use_voxel_filter: true
@@ -47,7 +39,7 @@ decompressed_viewer_node:
     # ROS Settings
     use_sim_time: false
 
-# Check Markers Node Parameters
+# Check Markers Node Parameters (not used when disabled)
 marker_checker_node:
   ros__parameters:
     # Topics to compare

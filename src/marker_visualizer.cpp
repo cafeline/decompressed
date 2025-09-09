@@ -76,35 +76,46 @@ visualization_msgs::msg::MarkerArray MarkerVisualizer::createSpatialPatternMarke
         
         total_voxels += voxel_positions.size();
         
-        // Create individual CUBE markers for each voxel
+        // Create a single CUBE_LIST marker for all voxels in this block
+        visualization_msgs::msg::Marker cube_list_marker;
+        cube_list_marker.header.frame_id = frame_id_;
+        cube_list_marker.header.stamp = rclcpp::Time();
+        cube_list_marker.ns = "block_" + std::to_string(block_idx);
+        cube_list_marker.id = marker_id;
+        cube_list_marker.type = visualization_msgs::msg::Marker::CUBE_LIST;
+        cube_list_marker.action = visualization_msgs::msg::Marker::ADD;
+        
+        // Set marker scale (slightly smaller than voxel size for visibility)
+        cube_list_marker.scale.x = voxel_size * 0.9;
+        cube_list_marker.scale.y = voxel_size * 0.9;
+        cube_list_marker.scale.z = voxel_size * 0.9;
+        
+        // Set pose (identity, as points are in world coordinates)
+        cube_list_marker.pose.orientation.w = 1.0;
+        
+        // Reserve space for efficiency
+        cube_list_marker.points.reserve(voxel_positions.size());
+        cube_list_marker.colors.reserve(voxel_positions.size());
+        
+        // Add all voxel positions and colors
         for (const auto& voxel_pos : voxel_positions) {
-            visualization_msgs::msg::Marker marker;
-            marker.header.frame_id = frame_id_;
-            marker.header.stamp = rclcpp::Time();
-            marker.id = marker_id;
-            marker.type = visualization_msgs::msg::Marker::CUBE;
-            marker.action = visualization_msgs::msg::Marker::ADD;
-            
-            // Set marker position (block position + voxel position)
-            marker.pose.position.x = std::get<0>(block_world_pos) + std::get<0>(voxel_pos);
-            marker.pose.position.y = std::get<1>(block_world_pos) + std::get<1>(voxel_pos);
-            marker.pose.position.z = std::get<2>(block_world_pos) + std::get<2>(voxel_pos);
-            marker.pose.orientation.w = 1.0;
-            
-            // Set marker scale (slightly smaller than voxel size for visibility)
-            marker.scale.x = voxel_size * 0.9;
-            marker.scale.y = voxel_size * 0.9;
-            marker.scale.z = voxel_size * 0.9;
+            geometry_msgs::msg::Point p;
+            p.x = std::get<0>(block_world_pos) + std::get<0>(voxel_pos);
+            p.y = std::get<1>(block_world_pos) + std::get<1>(voxel_pos);
+            p.z = std::get<2>(block_world_pos) + std::get<2>(voxel_pos);
+            cube_list_marker.points.push_back(p);
             
             // Set marker color to blue (all markers same color)
-            marker.color.r = 0.0;
-            marker.color.g = 0.0;
-            marker.color.b = 1.0;
-            marker.color.a = 0.5;  // Semi-transparent
-            
-            marker_array.markers.push_back(marker);
-            marker_id++;
+            std_msgs::msg::ColorRGBA color;
+            color.r = 0.0;
+            color.g = 0.0;
+            color.b = 1.0;
+            color.a = 0.5;  // Semi-transparent
+            cube_list_marker.colors.push_back(color);
         }
+        
+        marker_array.markers.push_back(cube_list_marker);
+        marker_id++;
     }
     
     RCLCPP_DEBUG(rclcpp::get_logger("MarkerVisualizer"),
@@ -150,35 +161,46 @@ visualization_msgs::msg::MarkerArray MarkerVisualizer::createPatternMarkers(
             continue;
         }
         
-        // Create individual CUBE markers for each voxel
+        // Create a single CUBE_LIST marker for all voxels in this pattern
+        visualization_msgs::msg::Marker cube_list_marker;
+        cube_list_marker.header.frame_id = frame_id_;
+        cube_list_marker.header.stamp = rclcpp::Time();
+        cube_list_marker.ns = "pattern_" + std::to_string(i);
+        cube_list_marker.id = static_cast<int>(i);
+        cube_list_marker.type = visualization_msgs::msg::Marker::CUBE_LIST;
+        cube_list_marker.action = visualization_msgs::msg::Marker::ADD;
+        
+        // Set marker scale (slightly smaller than voxel size for visibility)
+        cube_list_marker.scale.x = voxel_size * 0.9;
+        cube_list_marker.scale.y = voxel_size * 0.9;
+        cube_list_marker.scale.z = voxel_size * 0.9;
+        
+        // Set pose (identity, as points are in world coordinates)
+        cube_list_marker.pose.orientation.w = 1.0;
+        
+        // Reserve space for efficiency
+        cube_list_marker.points.reserve(voxel_positions.size());
+        cube_list_marker.colors.reserve(voxel_positions.size());
+        
+        // Add all voxel positions and colors
         for (const auto& voxel_pos : voxel_positions) {
-            visualization_msgs::msg::Marker marker;
-            marker.header.frame_id = frame_id_;
-            marker.header.stamp = rclcpp::Time();
-            marker.id = marker_id;
-            marker.type = visualization_msgs::msg::Marker::CUBE;
-            marker.action = visualization_msgs::msg::Marker::ADD;
-            
-            // Set marker position (pattern offset + voxel position)
-            marker.pose.position.x = std::get<0>(pattern_offset) + std::get<0>(voxel_pos);
-            marker.pose.position.y = std::get<1>(pattern_offset) + std::get<1>(voxel_pos);
-            marker.pose.position.z = std::get<2>(pattern_offset) + std::get<2>(voxel_pos);
-            marker.pose.orientation.w = 1.0;
-            
-            // Set marker scale (slightly smaller than voxel size for visibility)
-            marker.scale.x = voxel_size * 0.9;
-            marker.scale.y = voxel_size * 0.9;
-            marker.scale.z = voxel_size * 0.9;
+            geometry_msgs::msg::Point p;
+            p.x = std::get<0>(pattern_offset) + std::get<0>(voxel_pos);
+            p.y = std::get<1>(pattern_offset) + std::get<1>(voxel_pos);
+            p.z = std::get<2>(pattern_offset) + std::get<2>(voxel_pos);
+            cube_list_marker.points.push_back(p);
             
             // Set marker color to blue (all markers same color)
-            marker.color.r = 0.0;
-            marker.color.g = 0.0;
-            marker.color.b = 1.0;
-            marker.color.a = 0.5;  // Semi-transparent
-            
-            marker_array.markers.push_back(marker);
-            marker_id++;
+            std_msgs::msg::ColorRGBA color;
+            color.r = 0.0;
+            color.g = 0.0;
+            color.b = 1.0;
+            color.a = 0.5;  // Semi-transparent
+            cube_list_marker.colors.push_back(color);
         }
+        
+        marker_array.markers.push_back(cube_list_marker);
+        marker_id = static_cast<int>(i) + 1;  // Update marker_id for next pattern
     }
     
     return marker_array;
